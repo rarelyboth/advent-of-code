@@ -11,23 +11,48 @@ typedef struct {
     int red;
     int green;
     int blue;
-} Game;
+} Match;
 
-Game initGame(int red, int green, int blue) {
-    Game game;
-    game.red = red;
-    game.green = green;
-    game.blue = blue;
+Match *initMatch(int red, int green, int blue) {
+    Match *match = malloc(sizeof(Match));
 
-    return game;
+    match->red = red;
+    match->green = green;
+    match->blue = blue;
+
+    return match;
 }
 
-bool gamePossible(const Game game, int maxRed, int maxGreen, int maxBlue) {
-    if (game.red > maxRed || game.green > maxGreen || game.blue > maxBlue) {
+bool matchPossible(const Match *match, int maxRed, int maxGreen, int maxBlue) {
+    if (match->red > maxRed || match->green > maxGreen || match->blue > maxBlue) {
         return false;
     }
 
     return true;
+}
+
+typedef struct {
+    int id;
+    int nMatches;
+    Match **matches;
+} Game;
+
+Game *initGame(int id) {
+    Game *game = malloc(sizeof(Game));
+    game->id = id;
+    game->matches = malloc(0 * sizeof(Match));
+
+    return game;
+}
+
+void addMatchToGame(Game *game, Match *match) {
+    game->nMatches += 1;
+    game->matches = realloc(game->matches, game->nMatches * sizeof(Match));
+    if (game->matches == NULL) {
+        fprintf(stderr, "Failed to add match to game!");
+        exit(EXIT_FAILURE);
+    }
+    *(game->matches + game->nMatches - 1) = match;
 }
 
 int partOne();
@@ -62,32 +87,28 @@ int parseGameID(const char *line) {
     return strtol(itID, NULL, 10);
 }
 
-bool parseDrawPossible(const char *drawLine) {
+Match *parseMatch(const char *matchString) {
     // Find the first cube count
-    char *itNum = strpbrk(drawLine, "0123456789");
-    char *itColour = strpbrk(drawLine, "rgb");
+    char *itNum = strpbrk(matchString, "0123456789");
+    char *itColour = strpbrk(matchString, "rgb");
 
-    Game game = initGame(0, 0, 0);
+    Match *match = initMatch(0, 0, 0);
     do {
         // Extract & increment the cube count
         int numCubes = strtol(itNum, &itNum, 10);
         switch (*itColour) {
         case 'r':
-            game.red += numCubes;
+            match->red += numCubes;
             break;
         case 'g':
-            game.green += numCubes;
+            match->green += numCubes;
             break;
         case 'b':
-            game.blue += numCubes;
+            match->blue += numCubes;
             break;
         default:
             fprintf(stderr, "Invalid cube colour: %c", *itColour);
             exit(EXIT_FAILURE);
-        }
-
-        if (!gamePossible(game, MAX_RED, MAX_GREEN, MAX_BLUE)) {
-            return false;
         }
 
         // Find the next cube count
@@ -95,30 +116,31 @@ bool parseDrawPossible(const char *drawLine) {
         itColour = strpbrk(itColour + 3, "rgb"); // Increment by 3 because of "red"
     } while (itNum != NULL && itColour != NULL);
 
-    return true;
+    return match;
 }
 
-bool parseGamePossible(const char *line) {
+Game *parseGame(const char *gameString) {
+    int id = parseGameID(gameString);
+
+    Game *game = initGame(id);
+
     // Assumes games start after the first occurrence of ':'
-    char *itStart = strchr(line, ':');
-
-    char *draw = calloc(strlen(line) + 1, sizeof(char));
-
+    char *itStart = strchr(gameString, ':');
+    char *matchString = calloc(strlen(gameString) + 1, sizeof(char));
     do {
         ++itStart;
-        copyToUntil(itStart, draw, ';');
+        copyToUntil(itStart, matchString, ';');
 
-        if (!parseDrawPossible(draw)) {
-            return false;
-        }
+        Match *match = parseMatch(matchString);
+        addMatchToGame(game, match);
 
         // Find the start of the next game
         itStart = strchr(itStart, ';');
     } while (itStart != NULL);
 
-    free(draw);
+    free(matchString);
 
-    return true;
+    return game;
 }
 
 int partOne() {
@@ -135,16 +157,26 @@ int partOne() {
         // Extract the line
         char *line = copyUntil(buffer, '\n');
 
-        // Identify the game associated with this line
-        int id = parseGameID(line);
+        // Parse the game
+        Game *game = parseGame(line);
 
-        // If the game was possible, increment the sum by the game's ID
-        if (parseGamePossible(line)) {
-            sum += id;
+        // Check if the game was possible
+        bool possible = true;
+        for (int i = 0; i < game->nMatches; ++i) {
+            if (!matchPossible(*(game->matches + i), MAX_RED, MAX_GREEN, MAX_BLUE)) {
+                possible = false;
+                break;
+            }
+        }
+
+        // If the game was possible, sum its ID
+        if (possible) {
+            sum += game->id;
         }
 
         // Dealloc
         free(line);
+        free(game);
     }
 
     fclose(file);
