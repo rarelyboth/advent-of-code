@@ -31,6 +31,10 @@ bool matchPossible(const Match *match, int maxRed, int maxGreen, int maxBlue) {
     return true;
 }
 
+int matchPower(Match match) {
+    return match.red * match.green * match.blue;
+}
+
 typedef struct {
     int id;
     int nMatches;
@@ -45,6 +49,14 @@ Game *initGame(int id) {
     return game;
 }
 
+void freeGame(Game *game) {
+    for (int i = 0; i < game->nMatches; ++i) {
+        free(*(game->matches + i));
+    }
+
+    free(game->matches);
+}
+
 void addMatchToGame(Game *game, Match *match) {
     game->nMatches += 1;
     game->matches = realloc(game->matches, game->nMatches * sizeof(Match));
@@ -55,10 +67,35 @@ void addMatchToGame(Game *game, Match *match) {
     *(game->matches + game->nMatches - 1) = match;
 }
 
+int gamePower(Game *game) {
+    Match max;
+    max.red = 0;
+    max.green = 0;
+    max.blue = 0;
+
+    for (int i = 0; i < game->nMatches; ++i) {
+        Match match = **(game->matches + i);
+
+        if (match.red > max.red) {
+            max.red = match.red;
+        }
+        if (match.green > max.green) {
+            max.green = match.green;
+        }
+        if (match.blue > max.blue) {
+            max.blue = match.blue;
+        }
+    }
+
+    return matchPower(max);
+}
+
 int partOne();
+int partTwo();
 
 int main() {
     printf("Part one: %i\n", partOne());
+    printf("Part two: %i\n", partTwo());
 
     return 0;
 }
@@ -176,7 +213,37 @@ int partOne() {
 
         // Dealloc
         free(line);
-        free(game);
+        freeGame(game);
+    }
+
+    fclose(file);
+
+    return sum;
+}
+
+int partTwo() {
+    FILE *file = fopen("input.txt", "r");
+    if (file == NULL) {
+        fprintf(stderr, "Failed to open file!");
+        exit(EXIT_FAILURE);
+    }
+
+    int sum = 0;
+    const int bufferSize = 256;
+    char buffer[bufferSize];
+    while(fgets(buffer, bufferSize, file) != NULL) {
+        // Extract the line
+        char *line = copyUntil(buffer, '\n');
+
+        // Parse the game
+        Game *game = parseGame(line);
+
+        // Sum the power of the game
+        sum += gamePower(game);
+
+        // Dealloc
+        free(line);
+        freeGame(game);
     }
 
     fclose(file);
