@@ -92,6 +92,7 @@ void rSetFree(rSet *set) {
 }
 
 typedef struct {
+    int n;
     rSet *winningNumbers;
     rSet *ownNumbers;
 } Card;
@@ -99,10 +100,20 @@ typedef struct {
 Card *cardNew(uint8_t maxNumbers) {
     Card *card = calloc(1, sizeof(Card));
 
+    card->n = 1;
     card->winningNumbers = rSetNew(maxNumbers);
     card->ownNumbers = rSetNew(maxNumbers);
 
     return card;
+}
+
+uint8_t cardsWon(Card *card) {
+    rSet *sharedNumbers = rSetIntersection(card->winningNumbers, card->ownNumbers);
+    uint8_t cardsWon = sharedNumbers->elements;
+
+    rSetFree(sharedNumbers);
+
+    return cardsWon;
 }
 
 uint64_t cardScore(Card *card) {
@@ -124,11 +135,11 @@ void cardFree(Card *card) {
     free(card);
 }
 
-uint8_t partOne();
+uint64_t partOne();
 uint64_t partTwo();
 
 int main() {
-    printf("Part One: %" PRIu8 "\n", partOne());
+    printf("Part One: %" PRIu64 "\n", partOne());
     printf("Part Two: %" PRIu64 "\n", partTwo());
 
     return 0;
@@ -154,7 +165,7 @@ FILE *rOpenFile(const char *filename) {
     return file;
 }
 
-void parseNumberSet(rSet *set, char* line) {
+void parseNumberSet(rSet *set, char *line) {
     char *it = strpbrk(line, DIGITS);
 
     while (it != NULL) {
@@ -165,7 +176,7 @@ void parseNumberSet(rSet *set, char* line) {
     }
 }
 
-Card *parseCard(const char* line) {
+Card *parseCard(const char *line) {
     char *winningNumbersStart = strchr(line, ':');
     char *winningNumbersString = rStringCopyUntil(winningNumbersStart, '|');
     char *ownNumbersString = strchr(line, '|');
@@ -177,7 +188,7 @@ Card *parseCard(const char* line) {
     return card;
 }
 
-uint8_t partOne() {
+uint64_t partOne() {
     FILE *file = rOpenFile("input.txt");
 
     const uint8_t nCards = 223;
@@ -200,9 +211,50 @@ uint8_t partOne() {
     }
     fclose(file);
 
-    return sum + 100;
+    return sum;
+}
+
+uint64_t countCards(Card **cards, uint8_t nCards) {
+    uint64_t sum = 0;
+
+    for (int i = 0; i < nCards; ++i) {
+        Card *aCard = *(cards + i);
+        uint64_t nCardsWon = cardsWon(aCard);
+
+        for (int j = i + 1; j < i + 1 + nCardsWon; ++j) {
+            Card *bCard = *(cards + j);
+            bCard->n += aCard->n;
+        }
+
+        sum += aCard->n;
+    }
+
+    return sum;
 }
 
 uint64_t partTwo() {
-    return 0;
+    FILE *file = rOpenFile("input.txt");
+
+    const uint8_t nCards = 223;
+    Card **cards = calloc(nCards, sizeof(Card));
+
+    const uint8_t bufferSize = 255;
+    char buffer[bufferSize];
+    for (int i = 0; fgets(buffer, bufferSize, file) != NULL; ++i) {
+        // Extract the line
+        const char *line = rStringCopyUntil(buffer, '\n');
+
+        // Parse the card
+        *(cards + i) = parseCard(line);
+    }
+
+    uint64_t sum = countCards(cards, nCards);
+
+    for (int i = 0; i < nCards; ++i) {
+        cardFree(*(cards + i));
+    }
+    free(cards);
+    fclose(file);
+
+    return sum;
 }
