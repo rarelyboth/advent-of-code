@@ -1,3 +1,6 @@
+#include "rlib/file.h"
+#include "rlib/string.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -181,18 +184,14 @@ Game *parseGame(const char *gameString) {
 }
 
 int partOne() {
-    FILE *file = fopen("input.txt", "r");
-    if (file == NULL) {
-        fprintf(stderr, "Failed to open file!");
-        exit(EXIT_FAILURE);
-    }
+    FILE *file = rFileOpen("input.txt");
 
     int sum = 0;
     const int bufferSize = 256;
     char buffer[bufferSize];
     while(fgets(buffer, bufferSize, file) != NULL) {
         // Extract the line
-        char *line = copyUntil(buffer, '\n');
+        char *line = rStringCopyUntil(buffer, '\n');
 
         // Parse the game
         Game *game = parseGame(line);
@@ -222,18 +221,14 @@ int partOne() {
 }
 
 int partTwo() {
-    FILE *file = fopen("input.txt", "r");
-    if (file == NULL) {
-        fprintf(stderr, "Failed to open file!");
-        exit(EXIT_FAILURE);
-    }
+    FILE *file = rFileOpen("input.txt");
 
     int sum = 0;
     const int bufferSize = 256;
     char buffer[bufferSize];
     while(fgets(buffer, bufferSize, file) != NULL) {
         // Extract the line
-        char *line = copyUntil(buffer, '\n');
+        char *line = rStringCopyUntil(buffer, '\n');
 
         // Parse the game
         Game *game = parseGame(line);

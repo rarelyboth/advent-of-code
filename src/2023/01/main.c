@@ -1,7 +1,9 @@
+#include "rlib/file.h"
+#include "rlib/string.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdbool.h>
 
 int partOne();
 int partTwo();
@@ -11,19 +13,6 @@ int main() {
     printf("Part two: %i\n", partTwo());
 
     return 0;
-}
-
-char *copyLine(const char *from) {
-    const char *itEnd = strpbrk(from, "\n");
-    unsigned long lineLength = strlen(from);
-    if (itEnd != NULL) {
-        --lineLength;
-    }
-
-    char *line = calloc(lineLength + 1, sizeof(char));
-    strlcpy(line, from, lineLength + 1);
-
-    return line;
 }
 
 char *readDigits(const char *string) {
@@ -74,17 +63,14 @@ char *readNumbers(const char *string) {
 }
 
 int partOne() {
-    FILE *file = fopen("input.txt", "r");
-    if (file == NULL) {
-        exit(EXIT_FAILURE);
-    }
+    FILE *file = rFileOpen("input.txt");
 
     int sum = 0;
     const int bufferSize = 64;
     char buffer[bufferSize];
     while (fgets(buffer, bufferSize, file) != NULL) {
         // Extract the line
-        char *line = copyLine(buffer);
+        char *line = rStringCopyUntil(buffer, '\n');
 
         // Extract numbers from the line
         char *numbersInLine = readDigits(line);
@@ -111,17 +97,14 @@ int partOne() {
 }
 
 int partTwo() {
-    FILE *file = fopen("input.txt", "r");
-    if (file == NULL) {
-        exit(EXIT_FAILURE);
-    }
+    FILE *file = rFileOpen("input.txt");
 
     int sum = 0;
     const int bufferSize = 64;
     char buffer[bufferSize];
     while (fgets(buffer, bufferSize, file) != NULL) {
         // Extract the line
-        char *line = copyLine(buffer);
+        char *line = rStringCopyUntil(buffer, '\n');
 
         // Extract numbers from the line
         char *numbersInLine = readNumbers(line);

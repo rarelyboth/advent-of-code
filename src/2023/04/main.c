@@ -1,3 +1,6 @@
+#include "rlib/file.h"
+#include "rlib/string.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <inttypes.h>
@@ -145,26 +148,6 @@ int main() {
     return 0;
 }
 
-char *rStringCopyUntil(const char *from, char until) {
-    const char *itEnd = strchr(from, until);
-    unsigned long lineLength = strnlen(from, itEnd - from);
-
-    char *line = calloc(lineLength + 1, sizeof(char));
-    strncpy(line, from, lineLength + 1);
-
-    return line;
-}
-
-FILE *rOpenFile(const char *filename) {
-    FILE *file = fopen(filename, "r");
-    if (file == NULL) {
-        fprintf(stderr, "Failed to open file!");
-        exit(EXIT_FAILURE);
-    }
-
-    return file;
-}
-
 void parseNumberSet(rSet *set, char *line) {
     char *it = strpbrk(line, DIGITS);
 
@@ -189,7 +172,7 @@ Card *parseCard(const char *line) {
 }
 
 uint64_t partOne() {
-    FILE *file = rOpenFile("input.txt");
+    FILE *file = rFileOpen("input.txt");
 
     const uint8_t nCards = 223;
     Card **cards = calloc(nCards, sizeof(Card));
@@ -233,7 +216,7 @@ uint64_t countCards(Card **cards, uint8_t nCards) {
 }
 
 uint64_t partTwo() {
-    FILE *file = rOpenFile("input.txt");
+    FILE *file = rFileOpen("input.txt");
 
     const uint8_t nCards = 223;
     Card **cards = calloc(nCards, sizeof(Card));

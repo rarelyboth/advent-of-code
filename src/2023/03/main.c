@@ -1,3 +1,6 @@
+#include "rlib/file.h"
+#include "rlib/string.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -91,26 +94,6 @@ int main() {
     return 0;
 }
 
-char *rStringCopyUntil(const char *from, char until) {
-    const char *itEnd = strchr(from, until);
-    unsigned long lineLength = strnlen(from, itEnd - from);
-
-    char *line = calloc(lineLength + 1, sizeof(char));
-    strncpy(line, from, lineLength + 1);
-
-    return line;
-}
-
-FILE *rOpenFile(const char *filename) {
-    FILE *file = fopen(filename, "r");
-    if (file == NULL) {
-        fprintf(stderr, "Failed to open file!");
-        exit(EXIT_FAILURE);
-    }
-
-    return file;
-}
-
 void parseSchematicLine(Schematic *schematic, int lineNumber, const char *line) {
     // Find the first character of interest. Either a part number or a symbol
     char *it = strpbrk(line, "0123456789!@#$%^&*,/+-="); // Note: no '.'
@@ -160,7 +143,7 @@ int sumSchematicPartNumbers(Schematic *schematic) {
 }
 
 int partOne() {
-    FILE *file = rOpenFile("input.txt");
+    FILE *file = rFileOpen("input.txt");
 
     Schematic *schematic = schematicNew(140);
 
@@ -219,7 +202,7 @@ int sumSchematicGearRatios(Schematic *schematic) {
 }
 
 int partTwo() {
-    FILE *file = rOpenFile("input.txt");
+    FILE *file = rFileOpen("input.txt");
 
     Schematic *schematic = schematicNew(140);
 
