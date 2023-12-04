@@ -3,6 +3,9 @@ project(advent-of-code C)
 
 set(CMAKE_C_STANDARD 17)
 
+include_directories(lib)
+add_subdirectory(lib)
+
 MACRO(SUBDIRLIST result current_directory)
     FILE(GLOB children RELATIVE ${current_directory} ${current_directory}/*)
     SET(dirlist "")
@@ -23,5 +26,7 @@ FOREACH(year ${years})
                 PROPERTIES
                 RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/${year}/${day}
         )
+        target_include_directories(${year}_${day} PRIVATE lib)
+        target_link_libraries(${year}_${day} rlib)
     ENDFOREACH()
 ENDFOREACH()
