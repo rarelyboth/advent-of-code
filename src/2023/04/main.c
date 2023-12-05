@@ -168,6 +168,8 @@ Card *parseCard(const char *line) {
     parseNumberSet(card->winningNumbers, winningNumbersString);
     parseNumberSet(card->ownNumbers, ownNumbersString);
 
+    free(winningNumbersString);
+
     return card;
 }
 
