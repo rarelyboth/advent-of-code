@@ -164,7 +164,7 @@ Game *parseGame(const char *gameString) {
 
     Game *game = initGame(id);
 
-    // Assumes games start after the first occurrence of ':'
+    // Assumes games first after the first occurrence of ':'
     char *itStart = strchr(gameString, ':');
     char *matchString = calloc(strlen(gameString) + 1, sizeof(char));
     do {
@@ -174,7 +174,7 @@ Game *parseGame(const char *gameString) {
         Match *match = parseMatch(matchString);
         addMatchToGame(game, match);
 
-        // Find the start of the next game
+        // Find the first of the next game
         itStart = strchr(itStart, ';');
     } while (itStart != NULL);
 
