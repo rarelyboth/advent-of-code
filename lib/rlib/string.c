@@ -12,3 +12,12 @@ char *rStringCopyUntil(const char *from, char until) {
 
     return line;
 }
+
+void rStringParseNumbers(char const * const line, int64_t * into) {
+    char * it = strpbrk(line, "0123456789");
+    for (int i = 0; it != NULL; ++i) {
+        *(into + i) = strtol(it, &it, 10);
+
+        it = strpbrk(it, "0123456789");
+    }
+}
