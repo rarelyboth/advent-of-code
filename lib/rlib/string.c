@@ -8,7 +8,7 @@ char *rStringCopyUntil(const char *from, char until) {
     size_t lineLength = strnlen(from, itEnd - from);
 
     char *line = calloc(lineLength + 1, sizeof(char));
-    strncpy(line, from, lineLength + 1);
+    strlcpy(line, from, lineLength + 1);
 
     return line;
 }
