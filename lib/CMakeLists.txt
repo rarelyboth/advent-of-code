@@ -5,7 +5,8 @@ set(CMAKE_C_STANDARD 17)
 
 SET(string_src rlib/string.h rlib/string.c)
 SET(file_src rlib/file.h rlib/file.c)
+SET(array_src rlib/array.h rlib/array.c)
 
-SET(rlib_src ${string_src} ${file_src})
+SET(rlib_src ${string_src} ${file_src} ${array_src})
 
 add_library(rlib STATIC ${rlib_src})
