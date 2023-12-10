@@ -2,19 +2,80 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <inttypes.h>
 
-typedef struct rArray_int64_t rArray_int64_t;
+// region rArray_int64_t
+#define T rArray_int64_t
+#define Ti int64_t
 
-extern rArray_int64_t * r_array_new_int64_t(size_t capacity);
-extern size_t r_array_length_int64_t(rArray_int64_t * const array);
-extern int64_t r_array_get_int64_t(rArray_int64_t * const array, size_t index);
-extern void r_array_append_int64_t(rArray_int64_t * const array, int64_t value);
-extern void r_array_resize_int64_t(rArray_int64_t * const array, size_t capacity);
-extern void r_array_free_int64_t(rArray_int64_t ** const array);
-extern int64_t * r_array_begin_int64_t(rArray_int64_t * const array);
-extern int64_t * r_array_rbegin_int64_t(rArray_int64_t * const array);
-extern int64_t * r_array_rend_int64_t(rArray_int64_t * const array);
-extern int64_t * r_array_end_int64_t(rArray_int64_t * const array);
-extern void r_array_print_int64_t(FILE * buffer, rArray_int64_t * const array);
-extern rArray_int64_t * r_array_reverse_int64_t(rArray_int64_t * const array);
+typedef struct T T;
+
+extern T * r_array_new_int64_t(size_t capacity);
+extern size_t r_array_length_int64_t(T * const array);
+extern Ti r_array_get_int64_t(T * const array, size_t index);
+extern void r_array_append_int64_t(T * const array, Ti value);
+extern void r_array_resize_int64_t(T * const array, size_t capacity);
+extern void r_array_free_int64_t(T ** const array);
+extern Ti * r_array_begin_int64_t(T * const array);
+extern Ti * r_array_rbegin_int64_t(T * const array);
+extern Ti * r_array_rend_int64_t(T * const array);
+extern Ti * r_array_end_int64_t(T * const array);
+extern void r_array_print_int64_t(FILE * buffer, T * const array);
+extern T * r_array_reverse_int64_t(T * const array);
+
+#undef Ti
+#undef T
+// endregion rArray_int64_t
+
+// region rArray_string
+#define T rArray_string
+#define Ti char
+
+typedef struct T T;
+
+extern T * r_array_new_string(size_t capacity);
+extern size_t r_array_length_string(T * const array);
+extern Ti * r_array_get_string(T * const array, size_t index);
+extern void r_array_append_string(T * const array, Ti * value);
+extern void r_array_resize_string(T * const array, size_t capacity);
+extern void r_array_free_string(T ** const array);
+extern Ti ** r_array_begin_string(T * const array);
+extern Ti ** r_array_rbegin_string(T * const array);
+extern Ti ** r_array_rend_string(T * const array);
+extern Ti ** r_array_end_string(T * const array);
+extern void r_array_print_string(FILE * buffer, T * const array);
+extern T * r_array_reverse_string(T * const array);
+
+#undef Ti
+#undef T
+// endregion rArray_string
+
+// region rArray_Pair
+#define T rArray_Pair
+#define Ti Pair
+
+typedef struct {
+    int64_t first;
+    int64_t second;
+} Pair;
+
+typedef struct T T;
+
+extern T * r_array_new_Pair(size_t capacity);
+extern size_t r_array_length_Pair(T * const array);
+extern Ti r_array_get_Pair(T * const array, size_t index);
+extern void r_array_append_Pair(T * const array, Ti value);
+extern void r_array_resize_Pair(T * const array, size_t capacity);
+extern void r_array_free_Pair(T ** const array);
+extern Ti * r_array_begin_Pair(T * const array);
+extern Ti * r_array_rbegin_Pair(T * const array);
+extern Ti * r_array_rend_Pair(T * const array);
+extern Ti * r_array_end_Pair(T * const array);
+extern void r_array_print_Pair(FILE * buffer, T * const array);
+extern T * r_array_reverse_Pair(T * const array);
+extern bool r_array_includes_Pair(T * const array, Ti value);
+
+#undef Ti
+#undef T
+// endregion rArray_Pair
