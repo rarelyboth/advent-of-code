@@ -1,125 +1,108 @@
 #include "array.h"
 
+#include <stdio.h>
 #include <assert.h>
 #include <stdlib.h>
 #include <inttypes.h>
 
-#define T rArray_int64_t
-#define Ti int64_t
-
-struct T {
-    size_t n;
-    size_t size;
-    Ti * array;
+struct rArray_int64_t {
+    size_t length;
+    size_t capacity;
+    int64_t * data;
 };
 
-T rArrayNew_int64_t(size_t size) {
-    assert(size >= 0);
+rArray_int64_t * r_array_new_int64_t(size_t capacity) {
+    rArray_int64_t * array = (rArray_int64_t *)malloc(sizeof(rArray_int64_t));
+    assert(array);
 
-    T array = calloc(1, sizeof(T));
-
-    array->n = 0;
-    array->size = size;
-    array->array = calloc(size, sizeof(Ti));
+    array->length = 0;
+    array->capacity = capacity;
+    array->data = (int64_t *) calloc(capacity, sizeof(int64_t));
+    assert(array->data);
 
     return array;
 }
 
-size_t rArrayLength_int64_t(T array) {
+size_t r_array_length_int64_t(rArray_int64_t * const array) {
     assert(array);
-    return array->n;
+
+    return array->length;
 }
 
-Ti rArrayGet_int64_t(T array, size_t i) {
-    assert(array && array->array);
-    assert(i >= 0 && i < array->n);
+int64_t r_array_get_int64_t(rArray_int64_t * const array, size_t index) {
+    assert(array && array->data);
 
-    return *(array->array + i);
+    return array->data[index];
 }
 
-Ti rArraySet_int64_t(T array, size_t i, Ti element) {
-    assert(array && array->array);
-    assert(i >= 0 && i < array->n);
+void r_array_append_int64_t(rArray_int64_t * const array, int64_t value) {
+    assert(array && array->data);
 
-    *(array->array + i) = element;
-    return element;
-}
-
-Ti rArrayInsert_int64_t(T array, size_t i, Ti element) {
-    assert(array && array->array);
-    assert(i >=0 && i < array->n);
-
-    rArrayShift_int64_t(array, i, 1);
-    rArraySet_int64_t(array, i, element);
-
-    return element;
-}
-
-void rArrayShift_int64_t(T array, size_t i, size_t n) {
-    assert(array && array->array);
-    assert(i >= 0 && i < array->n);
-    assert(n > 0);
-
-    if (array->n + n > array->size) {
-        rArrayResize_int64_t(array, array->size * 2);
+    if (array->length >= array->capacity) {
+        r_array_resize_int64_t(array, array->capacity * 2);
     }
 
-    Ti * it = array->array + array->n;
-    Ti * itPrev = it - 1;
-    for (; itPrev >= array->array + i; --itPrev, --it) {
-        *it = *itPrev;
-        *itPrev = 0;
-    }
-
-    ++array->n;
+    array->data[array->length++] = value;
 }
 
-void rArrayResize_int64_t(T array, size_t size) {
-    assert(array && array->array);
-    assert(size >= 0);
+void r_array_resize_int64_t(rArray_int64_t * const array, size_t capacity) {
+    assert(array && array->data);
+    assert(capacity > 0);
 
-    if (size == 0) {
-        rArrayFree_int64_t(array);
-    } else {
-        array->size = size;
-        array->array = realloc(array->array, array->size * sizeof(Ti));
-        assert(array->array);
+    array->capacity = capacity;
+    array->data = (int64_t *)realloc(array->data, array->capacity * sizeof(int64_t));
+    assert(array->data);
+}
 
-        if (array->size <= array->n) {
-            array->n = array->size;
+void r_array_free_int64_t(rArray_int64_t ** const array) {
+    assert(array && (*array)->data);
+
+    free((*array)->data);
+    free(*array);
+}
+
+int64_t * r_array_begin_int64_t(rArray_int64_t * const array) {
+    assert(array && array->data);
+
+    return array->data;
+}
+
+int64_t * r_array_end_int64_t(rArray_int64_t * const array) {
+    assert(array && array->data);
+
+    return array->data + array->length;
+}
+
+int64_t * r_array_rbegin_int64_t(rArray_int64_t * const array) {
+    assert(array && array->data);
+
+    return r_array_end_int64_t(array) - 1;
+}
+
+int64_t * r_array_rend_int64_t(rArray_int64_t * const array) {
+    assert(array && array->data);
+
+    return r_array_begin_int64_t(array) - 1;
+}
+
+void r_array_print_int64_t(FILE * buffer, rArray_int64_t * const array) {
+    for (int64_t * it = r_array_begin_int64_t(array); it != r_array_end_int64_t(array); ++it) {
+        fprintf(buffer, "%" PRIi64, *it);
+        if (it != r_array_end_int64_t(array) - 1) {
+            fprintf(buffer, ", ");
         }
     }
+
+    fprintf(buffer, "\n");
 }
 
-Ti rArrayAppend_int64_t(T array, Ti element) {
-    assert(array && array->array);
+rArray_int64_t * r_array_reverse_int64_t(rArray_int64_t * const array) {
+    rArray_int64_t * reversed = r_array_new_int64_t(array->length);
 
-    if (array->n + 1 > array->size) {
-        rArrayResize_int64_t(array, array->size * 2);
+    for (int64_t * it = r_array_rbegin_int64_t(array); it != r_array_rend_int64_t(array); --it) {
+        r_array_append_int64_t(reversed, *it);
     }
 
-    *(array->array + array->n) = element;
-    ++(array->n);
-
-    return element;
+    return reversed;
 }
-
-Ti rArrayPrepend_int64_t(T array, Ti element) {
-    assert(array && array->array);
-
-    rArrayShift_int64_t(array, 0, 1);
-    rArraySet_int64_t(array, 0, element);
-
-    return element;
-}
-
-void rArrayFree_int64_t(T array) {
-    assert(array && array->array);
-
-    free(array->array);
-    free(array);
-}
-
-#undef Ti
-#undef T
 

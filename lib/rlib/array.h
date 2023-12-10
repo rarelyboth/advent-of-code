@@ -1,22 +1,20 @@
 #pragma once
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <inttypes.h>
 
-#define T rArray_int64_t
-#define Ti int64_t
+typedef struct rArray_int64_t rArray_int64_t;
 
-typedef struct T * T;
-
-extern T rArrayNew_int64_t(size_t length);
-extern size_t rArrayLength_int64_t(T array);
-extern Ti rArrayGet_int64_t(T array, size_t i);
-extern Ti rArraySet_int64_t(T array, size_t i, Ti element);
-extern Ti rArrayInsert_int64_t(T array, size_t i, Ti element);
-extern void rArrayShift_int64_t(T array, size_t i, size_t n);
-extern void rArrayResize_int64_t(T array, size_t size);
-extern Ti rArrayAppend_int64_t(T array, Ti element);
-extern Ti rArrayPrepend_int64_t(T array, Ti element);
-extern void rArrayFree_int64_t(T array);
-
-#undef Ti
-#undef T
+extern rArray_int64_t * r_array_new_int64_t(size_t capacity);
+extern size_t r_array_length_int64_t(rArray_int64_t * const array);
+extern int64_t r_array_get_int64_t(rArray_int64_t * const array, size_t index);
+extern void r_array_append_int64_t(rArray_int64_t * const array, int64_t value);
+extern void r_array_resize_int64_t(rArray_int64_t * const array, size_t capacity);
+extern void r_array_free_int64_t(rArray_int64_t ** const array);
+extern int64_t * r_array_begin_int64_t(rArray_int64_t * const array);
+extern int64_t * r_array_rbegin_int64_t(rArray_int64_t * const array);
+extern int64_t * r_array_rend_int64_t(rArray_int64_t * const array);
+extern int64_t * r_array_end_int64_t(rArray_int64_t * const array);
+extern void r_array_print_int64_t(FILE * buffer, rArray_int64_t * const array);
+extern rArray_int64_t * r_array_reverse_int64_t(rArray_int64_t * const array);
