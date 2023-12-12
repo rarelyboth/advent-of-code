@@ -91,8 +91,7 @@ Ti * r_array_rend_int64_t(T * const array) {
 
 void r_array_print_int64_t(FILE * buffer, T * const array) {
     for (Ti * it = r_array_begin_int64_t(array); it != r_array_end_int64_t(array); ++it) {
-        fprintf(buffer, "%"
-        , *it);
+        fprintf(buffer, "%" PRIi64, *it);
         if (it != r_array_end_int64_t(array) - 1) {
             fprintf(buffer, ", ");
         }
