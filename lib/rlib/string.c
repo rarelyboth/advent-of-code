@@ -20,7 +20,7 @@ char * r_string_copy_until(char * from, char until) {
     size_t length = strnlen(from, it_end - from);
 
     char * line = calloc(length + 1, sizeof(char));
-    strlcpy(line, from, length + 1);
+    strncpy(line, from, length + 1);
 
     return line;
 }
@@ -32,7 +32,7 @@ void r_string_append(char ** string, char * append) {
     *string = realloc(string, (string_len + append_len + 1) * sizeof(char));
     assert(string != NULL);
 
-    strlcat(*string, append, 5);
+    strncat(*string, append, 5);
 }
 
 void rStringParseNumbers(char const * const line, int64_t * into) {
