@@ -140,7 +140,7 @@ int main() {
 //}
 
 size_t n_i(size_t i, size_t j, size_t k) {
-    return (i * 128 * 32) + (j * 32) + k;
+    return (i * 64 * 32) + (j * 32) + k;
 }
 
 int64_t * cache;
@@ -272,7 +272,7 @@ int64_t part_one() {
 
     int64_t sum = 0;
 
-    cache = malloc(256 * 128 * 32 * sizeof(int64_t));
+    cache = malloc(128 * 64 * 32 * sizeof(int64_t));
 
     size_t const buffer_size = 256;
     char buffer[buffer_size];
@@ -285,7 +285,7 @@ int64_t part_one() {
 //        fprintf(stderr, "%s: ", pattern);
         //r_array_print_int64_t(stderr, groups);
 
-        for (size_t i = 0; i < 256 * 128 * 32; ++i) {
+        for (size_t i = 0; i < 128 * 64 * 32; ++i) {
             cache[i] = -1;
         }
 
