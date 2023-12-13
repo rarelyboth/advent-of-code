@@ -11,9 +11,9 @@ int64_t part_one();
 //int64_t part_two();
 
 int main() {
-//    for (size_t i = 0; i < 1000; ++i) {
+    for (size_t i = 0; i < 1000; ++i) {
         printf("Part One: %" PRIi64 "\n", part_one());
-//    }
+    }
 
 //    printf("Part One: %" PRIi64 "\n", part_two());
 
@@ -140,12 +140,15 @@ int main() {
 //}
 
 size_t n_i(size_t i, size_t j, size_t k) {
-    return (i * 64 * 16) + (j * 16) + k;
+    return (i * 128 * 32) + (j * 32) + k;
 }
 
 int64_t * cache;
 
 int64_t enumerate_solutions_memoised(char const * string, rArray_int64_t * groups, size_t s_i, size_t g_i, size_t g_i_i) {
+    int64_t r_s = strlen(string) - s_i;
+    int64_t r_g = r_array_length_int64_t(groups) - g_i;
+
     if (string[s_i] == '\0') {
         if (g_i == r_array_length_int64_t(groups) && g_i_i == 0) {
             return 1;
@@ -154,9 +157,9 @@ int64_t enumerate_solutions_memoised(char const * string, rArray_int64_t * group
         }
     }
 
-//    if (cache[n_i(s_i, g_i, g_i_i)] >= 0) {
-//        return cache[n_i(s_i, g_i, g_i_i)];
-//    }
+    if (cache[n_i(r_s, r_g, g_i_i)] >= 0) {
+        return cache[n_i(r_s, r_g, g_i_i)];
+    }
 
     int64_t n_solutions = 0;
 
@@ -182,7 +185,7 @@ int64_t enumerate_solutions_memoised(char const * string, rArray_int64_t * group
         }
     }
 
-//    cache[n_i(s_i, g_i, g_i_i)] = n_solutions;
+    cache[n_i(r_s, r_g, g_i_i)] = n_solutions;
     return n_solutions;
 }
 
@@ -265,11 +268,11 @@ int64_t enumerate_solutions_memoised(char const * string, rArray_int64_t * group
 //}
 
 int64_t part_one() {
-    FILE * file = rFileOpen("input_1.txt");
+    FILE * file = rFileOpen("input.txt");
 
     int64_t sum = 0;
 
-    cache = malloc(128 * 64 * 16 * sizeof(int64_t));
+    cache = malloc(256 * 128 * 32 * sizeof(int64_t));
 
     size_t const buffer_size = 256;
     char buffer[buffer_size];
@@ -282,10 +285,11 @@ int64_t part_one() {
 //        fprintf(stderr, "%s: ", pattern);
         //r_array_print_int64_t(stderr, groups);
 
-        for (size_t i = 0; i < 128 * 64 * 16; ++i) {
+        for (size_t i = 0; i < 256 * 128 * 32; ++i) {
             cache[i] = -1;
         }
 
+        size_t x = strlen(pattern);
         int64_t solutions = enumerate_solutions_memoised(pattern, groups, 0, 0, 0);
         sum += solutions;
 //        printf("%zu: %" PRIi64"\n", m, solutions);
