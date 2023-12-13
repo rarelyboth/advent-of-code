@@ -23,6 +23,7 @@ extern Ti * r_array_rend_int64_t(T * const array);
 extern Ti * r_array_end_int64_t(T * const array);
 extern void r_array_print_int64_t(FILE * buffer, T * const array);
 extern T * r_array_reverse_int64_t(T * const array);
+extern void r_array_set_int64_t(T * const array, size_t index, int64_t value);
 
 #undef Ti
 #undef T

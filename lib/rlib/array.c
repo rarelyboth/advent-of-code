@@ -35,6 +35,7 @@ size_t r_array_length_int64_t(T * const array) {
 
 Ti r_array_get_int64_t(T * const array, size_t index) {
     assert(array && array->data);
+    assert(index < array->length);
 
     return array->data[index];
 }
@@ -108,6 +109,13 @@ T * r_array_reverse_int64_t(T * const array) {
     }
 
     return reversed;
+}
+
+void r_array_set_int64_t(T * const array, size_t index, int64_t value) {
+    assert(array && array->data);
+    assert(index < array->length);
+
+    array->data[index] = value;
 }
 
 #undef Ti
