@@ -140,6 +140,8 @@ int64_t part_one() {
         }
     }
 
+    fclose(file);
+
     return sum;
 }
 
@@ -193,6 +195,8 @@ int64_t part_two() {
             break;
         }
     }
+
+    fclose(file);
 
     return sum;
 }
