@@ -20,7 +20,7 @@ char * r_string_copy_until(char * from, char until) {
     size_t length = strnlen(from, it_end - from);
 
     char * line = calloc(length + 1, sizeof(char));
-    strlcpy(line, from, length + 1);
+    strncpy_s(line, length + 1, from, length);
 
     return line;
 }
