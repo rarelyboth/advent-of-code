@@ -57,3 +57,24 @@ int64_t part_one() {
 
     return load;
 }
+
+int64_t part_two() {
+    FILE * file = r_file_open("example.txt");
+
+    size_t const buffer_size = 16;
+    char buffer[buffer_size];
+    for (size_t y = 0; fgets(buffer, buffer_size, file) != NULL; ++y) {
+        char * line = r_string_copy_until(buffer, '\n');
+
+        char const * it = line;
+        for (size_t x = 0; *it != '\0'; ++it, ++x) {
+
+        }
+
+        free(line);
+    }
+
+    fclose(file);
+
+    return 0;
+}
