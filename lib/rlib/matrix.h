@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdlib.h>
 #include <inttypes.h>
 
 // region rMatrix_Bit

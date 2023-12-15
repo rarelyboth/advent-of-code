@@ -23,7 +23,9 @@ extern Ti * r_array_rend_int64_t(T * const array);
 extern Ti * r_array_end_int64_t(T * const array);
 extern void r_array_print_int64_t(FILE * buffer, T * const array);
 extern T * r_array_reverse_int64_t(T * const array);
-extern void r_array_set_int64_t(T * const array, size_t index, int64_t value);
+extern void r_array_set_int64_t(T * const array, size_t index, Ti value);
+extern Ti r_array_remove_int64_t(T * const array, size_t index);
+extern Ti * r_array_find_int64_t(T * const array, Ti value);
 
 #undef Ti
 #undef T
@@ -80,3 +82,35 @@ extern bool r_array_includes_Pair(T * const array, Ti value);
 #undef Ti
 #undef T
 // endregion rArray_Pair
+
+// region rArray_Lens
+#define T rArray_Lens
+#define Ti Lens
+
+typedef struct {
+    char * label;
+    int64_t focal_length;
+} Lens;
+
+typedef struct T T;
+
+extern T * r_array_new_Lens(size_t capacity);
+extern size_t r_array_length_Lens(T * const array);
+extern Ti r_array_get_Lens(T * const array, size_t index);
+extern void r_array_append_Lens(T * const array, Ti value);
+extern void r_array_resize_Lens(T * const array, size_t capacity);
+extern void r_array_free_Lens(T ** const array);
+extern Ti * r_array_begin_Lens(T * const array);
+extern Ti * r_array_rbegin_Lens(T * const array);
+extern Ti * r_array_rend_Lens(T * const array);
+extern Ti * r_array_end_Lens(T * const array);
+extern void r_array_print_Lens(FILE * buffer, T * const array);
+extern T * r_array_reverse_Lens(T * const array);
+extern void r_array_set_Lens(T * const array, size_t index, Ti value);
+extern Ti r_array_remove_Lens(T * const array, size_t index);
+extern Ti * r_array_find_Lens(T * const array, Ti value);
+
+#undef Ti
+#undef T
+// endregion rArray_Lens
+
