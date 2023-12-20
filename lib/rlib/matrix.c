@@ -3,58 +3,61 @@
 #include <stdlib.h>
 #include <assert.h>
 
-// region rMatrix_Bit
+// region rMatrix_int64_t
 
-#define T rMatrix_Bit
-#define Ti uint64_t
-#define Ti_SIZE 64
+#define T rMatrix_int64_t
+#define Ti int64_t
 
 struct T {
     size_t m;
     size_t n;
-    size_t n_Ti;
     Ti * data;
 };
 
-T * r_matrix_new_bit(size_t m, size_t n) {
+rMatrix_int64_t * r_matrix_new_int64_t(size_t m, size_t n) {
     assert(m > 0 && n > 0);
 
-    // Compute the number of Ti n_Ti necessary to store n bits
-    size_t const n_Ti = n / Ti_SIZE + (n % Ti_SIZE != 0);
-
-    T * matrix = (T *)malloc(sizeof(T));
+    T * matrix = malloc(sizeof(T));
     assert(matrix);
 
     matrix->m = m;
     matrix->n = n;
-    matrix->n_Ti = n_Ti;
-    matrix->data = (Ti *)calloc(m * n_Ti, sizeof(Ti));
+    matrix->data = calloc(m * n, sizeof(Ti));
     assert(matrix->data);
 
     return matrix;
 }
 
-Ti r_matrix_get_bit(T * matrix, size_t m, size_t n) {
+Ti * r_matrix_at_int64_t(T * matrix, size_t m, size_t n) {
+    assert(m >= 0 && m < matrix->m);
+    assert(n >= 0 && n < matrix->n);
     assert(matrix && matrix->data);
-    assert(m > 0 && n > 0);
-    assert(m < matrix->m && n < matrix->n);
 
-    // Compute the Ti column being accessed
-    size_t const n_ = n / Ti_SIZE;
-    assert(n_ < matrix->n_Ti);
-
-    // Compute the column within the Ti column being accessed
-    size_t const n_n = n % Ti_SIZE;
-
-    return matrix->data[(m * matrix->n_Ti) + n_] & 1 << n_n;
+    return matrix->data + m * matrix->n + n;
 }
 
-void r_matrix_push_row_bit(T * matrix, size_t m, Ti bit) {
-    assert(matrix && matrix->data);
-    assert(m > 0 && m < matrix->m);
-    assert(bit == 1 || bit == 0);
-
-
+Ti r_matrix_get_int64_t(rMatrix_int64_t * matrix, size_t m, size_t n) {
+    return *r_matrix_at_int64_t(matrix, m, n);
 }
 
-// endregion rMatrix_Bit
+void r_matrix_set_int64_t(rMatrix_int64_t * matrix, size_t m, size_t n, int64_t value) {
+    *r_matrix_at_int64_t(matrix, m, n) = value;
+}
+
+void r_matrix_free_int64_t(rMatrix_int64_t ** matrix) {
+    free((*matrix)->data);
+    free(*matrix);
+}
+
+size_t r_matrix_m_int64_t(T * matrix) {
+    return matrix->m;
+}
+
+size_t r_matrix_n_int64_t(T * matrix) {
+    return matrix->n;
+}
+
+#undef Ti
+#undef T
+
+// endregion rMatrix_int64_t
