@@ -8,7 +8,8 @@ SET(file_src rlib/file.h rlib/file.c)
 SET(array_src rlib/array.h rlib/array.c)
 SET(matrix_src rlib/matrix.h rlib/matrix.c)
 SET(tree_src rlib/tree.h rlib/tree.c)
+SET(graph_src rlib/graph.h rlib/graph.c)
 
-SET(rlib_src ${string_src} ${file_src} ${array_src} ${matrix_src} ${tree_src})
+SET(rlib_src ${string_src} ${file_src} ${array_src} ${matrix_src} ${tree_src} ${graph_src})
 
 add_library(rlib STATIC ${rlib_src})

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "graph.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -114,3 +116,24 @@ extern Ti * r_array_find_Lens(T * const array, Ti value);
 #undef T
 // endregion rArray_Lens
 
+// region rArray_rArc
+#define T rArray_rArc
+#define Ti rGraphArc
+
+typedef struct T T;
+
+extern T * r_array_new_rArc(size_t capacity);
+extern size_t r_array_length_rArc(T * const array);
+extern Ti * r_array_get_rArc(T * const array, size_t index);
+extern void r_array_append_rArc(T * const array, Ti * value);
+extern void r_array_resize_rArc(T * const array, size_t capacity);
+extern void r_array_free_rArc(T ** const array);
+extern Ti ** r_array_begin_rArc(T * const array);
+extern Ti ** r_array_rbegin_rArc(T * const array);
+extern Ti ** r_array_rend_rArc(T * const array);
+extern Ti ** r_array_end_rArc(T * const array);
+extern void r_array_set_rArc(T * const array, size_t index, Ti * value);
+
+#undef Ti
+#undef T
+// endregion rArray_rArc
